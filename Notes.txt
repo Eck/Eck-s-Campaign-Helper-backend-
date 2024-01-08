@@ -1,0 +1,25 @@
+Overall Goal:
+Make a helper app to generate random NPC's for an RPG campaign like Dungeons & Dragons.
+Ask ChatGPT to write a cool description for those NPC's.
+Ask MidJourney to make some character art for those NPC's.
+Store all that stuff in in the database so people can browse it.
+
+
+Getting the ChatGPT stuff call was super easy thanks to the package. But I don't want to burn through my free credits, during testing. :) Instead, I'm going to mock up responses, and swap that out for the real thing later.
+
+
+TODO:
+  - Mock ChatGPT request
+  - Wire up a Database Maybe Sqlite maybe MySQL
+  - Create DataModel / Database Seed scripts for the app.
+  - CRUD pages for an NPC, maybe even CRUD pages for the dropdowns, Race, Class, Gender, etc. so people can add what's missing.
+
+
+Links:
+https://platform.openai.com/usage - Keep an eye on things. Make sure my tests don't burn through all my credits. :D
+https://platform.openai.com/playground?mode=chat
+
+https://platform.openai.com/docs/overview
+https://platform.openai.com/docs/api-reference/chat
+https://platform.openai.com/docs/guides/text-generation/chat-completions-api?lang=node.js
+
