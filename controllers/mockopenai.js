@@ -18,21 +18,21 @@
 // Enum that holds the valid roles for a message
 const MockRoles = Object.freeze(
 {
-    none : "none",           // No roll specified
-    system : "system",       // Used to specify what kind of assistant the AI should pretend to be.
-    assistant : "assistant", // Used for messages written by the AI
-    user : "user"            // Used for messages written by the user.
+	none : "none",           // No roll specified
+	system : "system",       // Used to specify what kind of assistant the AI should pretend to be.
+	assistant : "assistant", // Used for messages written by the AI
+	user : "user"            // Used for messages written by the user.
 });
 
 
 // Simple class that holds the role and content. Used for sending/receiving messages to the AI
 class MockMessage
 {
-    constructor(role, content)
-    {
-        this.role = role;
-        this.content = content;
-    }
+	constructor(role, content)
+	{
+		this.role = role;
+		this.content = content;
+	}
 }
 
 // TODO - put these in the database. Just keep em in memory until I create one. Maybe Sqlite, Maybe MySql?
@@ -54,15 +54,15 @@ let messages = [];
 //     }
 class MockChoice
 {
-    constructor(role, content)
-    {
-        this.message = new MockMessage(role, content);
+	constructor(role, content)
+	{
+		this.message = new MockMessage(role, content);
 
-        // Putting in some bogus data to match what gets returned in happy path.
-        this.finish_reason = "stop";
-        this.index = 0;
-        this.logprobs = null;
-    }
+		// Putting in some bogus data to match what gets returned in happy path.
+		this.finish_reason = "stop";
+		this.index = 0;
+		this.logprobs = null;
+	}
 }
 
 
@@ -90,81 +90,81 @@ class MockChoice
 //     }
 class MockCompletion
 {
-    // The main method for creating a response from the AI
-    async create(request)
-    {
-        let messages = request.messages;
+	// The main method for creating a response from the AI
+	async create(request)
+	{
+		let messages = request.messages;
 
-        this.messages = [];
-        this.systemMessage = null;
+		this.messages = [];
+		this.systemMessage = null;
 
-        // Create some bogus data for the Completion.create fields.
-        this.created = Date.now() / 1000;
-        this.id = "MOCK-chatcmpl-7QyqpwdfhqwajicIEznoc6Q47XAyW";
-        this.model = "MOCK-" + request.model;
-        this.object = "MockCompletion";
-        this.usage = { "completion_tokens": 17, "prompt_tokens": 57, "total_tokens": 74 };
+		// Create some bogus data for the Completion.create fields.
+		this.created = Date.now() / 1000;
+		this.id = "MOCK-chatcmpl-7QyqpwdfhqwajicIEznoc6Q47XAyW";
+		this.model = "MOCK-" + request.model;
+		this.object = "MockCompletion";
+		this.usage = { "completion_tokens": 17, "prompt_tokens": 57, "total_tokens": 74 };
 
-        // If they didn't ask for anything, just return 
-        if(!Array.isArray(messages) || messages.length === 0)
-        {
-            this.choices = [new MockChoice(MockRoles.none, "No information requested")];
-            return this;
-        }
+		// If they didn't ask for anything, just return 
+		if(!Array.isArray(messages) || messages.length === 0)
+		{
+			this.choices = [new MockChoice(MockRoles.none, "No information requested")];
+			return this;
+		}
 
-        // Loop through our messages
-        let lastMessage = undefined;
-        for(let i=0;i<messages.length;++i)
-        {
-            let message = messages[i];
-            lastMessage = message;
+		// Loop through our messages
+		let lastMessage = undefined;
+		for(let i=0;i<messages.length;++i)
+		{
+			let message = messages[i];
+			lastMessage = message;
 
-            // store the system message in case it's useful
-            if(message.role == MockRoles.system)
-            {
-                systemMessage = message;
-            }
-            else
-            {
-                this.messages.push(message);
-            }
+			// store the system message in case it's useful
+			if(message.role == MockRoles.system)
+			{
+				systemMessage = message;
+			}
+			else
+			{
+				this.messages.push(message);
+			}
 
-            // TODO - build a list of paired user prompts/chat responses so I can make a more sophisticated mock system.
-        }
+			// TODO - build a list of paired user prompts/chat responses so I can make a more sophisticated mock system.
+		}
 
-        // If the last message was a prompt from a user, we need to generate a response
-        if(lastMessage.role == MockRoles.user)
-        {
-            this.choices = [new MockChoice(MockRoles.assistant, "TODO - Generate or lookup a random response.")];
-        }
-        // Otherwise just return the last message as if it's our response.
-        else
-        {
-            this.choices = [new MockChoice(lastMessage.role, lastMessage.content)];
-        }
+		// If the last message was a prompt from a user, we need to generate a response
+		if(lastMessage.role == MockRoles.user)
+		{
+			this.choices = [new MockChoice(MockRoles.assistant, "TODO - Generate or lookup a random response.")];
+		}
+		// Otherwise just return the last message as if it's our response.
+		else
+		{
+			this.choices = [new MockChoice(lastMessage.role, lastMessage.content)];
+		}
 
-        return this;
-    }
+		return this;
+	}
 }
 
 // This class is part of the chain to get to the create method. All it does is hold the completion.
 class MockChat 
 {
-    constructor()
-    {
-        this.completions = new MockCompletion();
-    }
+	constructor()
+	{
+		this.completions = new MockCompletion();
+	}
 }
 
 
 // This is the top-level class that pretends to be OpenAI. I'm not implementing EVERYTHING. I'm only implementing, the stuff that I'm using for now.
 export default class MockOpenAI 
 {
-    constructor(openAIParams)
-    {
-        this.openAIParams = openAIParams;
-        this.chat = new MockChat();        
-    }
+	constructor(openAIParams)
+	{
+		this.openAIParams = openAIParams;
+		this.chat = new MockChat();        
+	}
 }
 
 
