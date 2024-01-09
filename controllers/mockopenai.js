@@ -1,3 +1,4 @@
+import Interaction from './../models/interaction.js';
 // This javascript file just pretends to be OpenAI with some stubbed out classes that match how we call the real OpenAI system. 
 // The reason I'm making this mock system is because I didn't want to burn through my credits with like an infinite loop bug. :)
 
@@ -14,6 +15,14 @@
 
 // I made Mock classes for each bit in the "await openai.chat.completions.create" command. So MockOpenAI, MockChat, MockCompletion. MockCompletion has
 // the create method that matches the signature for the class passed in above.
+// Seeding our interactions with some data so it can look like a chat bot.
+let interactionDict = 
+{
+	"who won the world series in 2020" : new Interaction("Who won the world series in 2020?", "The Los Angeles Dodgers won the World Series in 2020."),
+	"where was it played" : new Interaction("Where was it played?", "The entire series was played at Globe Life Field in Arlington, Texas.")
+};
+
+
 
 // Enum that holds the valid roles for a message
 const MockRoles = Object.freeze(
@@ -114,6 +123,15 @@ class MockCompletion
 
 		// Loop through our messages
 		let lastMessage = undefined;
+		let lastUserMessage = undefined;
+		let lastAIMessage = undefined;
+		let lastInteraction = undefined;
+
+		// So this mock code is a bit dirty. I'll be receiving an alternating list of user prompts and ai responses.
+		// I'm not really worried about handling bad data here since I'm in control of everything.
+		// This loop goes through the list of prompt/responses and update any responses necessary.
+		// If the last bit of data was a request, we'll look up or create a response and set that
+		// as our choice.
 		for(let i=0;i<messages.length;++i)
 		{
 			let message = messages[i];
@@ -127,23 +145,56 @@ class MockCompletion
 			else
 			{
 				this.messages.push(message);
-			}
 
-			// TODO - build a list of paired user prompts/chat responses so I can make a more sophisticated mock system.
+				// If we're a user request, setup an interaction to hold the response
+				if(message.role == MockRoles.user)
+				{
+					lastUserMessage = message;
+					lastInteraction = this.GetOrCreateInteraction(message.content); 
+				}
+				// If we have an answer for the previous question, we can set our interaction
+				else if(message.role == MockRoles.assistant && lastInteraction)
+				{
+					lastAIMessage = message;
+					lastInteraction.response = message.content;
+					lastInteraction = undefined;
+				}
+			}
 		}
 
 		// If the last message was a prompt from a user, we need to generate a response
 		if(lastMessage.role == MockRoles.user)
 		{
-			this.choices = [new MockChoice(MockRoles.assistant, "TODO - Generate or lookup a random response.")];
+			let interaction = this.GetOrCreateInteraction(lastMessage.content);
+			this.choices = [JSON.stringify(new MockChoice(MockRoles.assistant, interaction.response))];
 		}
 		// Otherwise just return the last message as if it's our response.
 		else
 		{
-			this.choices = [new MockChoice(lastMessage.role, lastMessage.content)];
+			this.choices = [JSON.stringify(new MockChoice(lastMessage.role, lastMessage.content))];
 		}
 
 		return this;
+	}
+
+	// takes a user's prompt, strips everything but alpha numeric and reduces spaces.
+	ConvertPromptToDictionaryKey(prompt)
+	{
+		return prompt.replace(/[^\w\s\']|_/g, "")
+			.replace(/\s+/g, " ")
+			.toLowerCase()
+			.trim();
+	}
+
+	// Builds an Interaction to hold the user prompt and the AI's response
+	GetOrCreateInteraction(prompt)
+	{
+		let promptKey = this.ConvertPromptToDictionaryKey(prompt);
+		if(!interactionDict.hasOwnProperty(promptKey))
+		{
+			interactionDict[promptKey] = Interaction.CreateFromPrompt(prompt);
+		}
+		return interactionDict[promptKey];
 	}
 }
 
