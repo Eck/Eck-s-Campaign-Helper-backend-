@@ -4,6 +4,7 @@
   "description": "I needed a real project to better help my learning efforts for some cloud computing technologies. It'll also serve as an example for potential employers. My plan is to make some AI assisted tools that will be useful for DM's and learn some cloud computing stuff along the way.",
   "main": "index.js",
   "scripts": {
+    "seed": "node database/initdatabase.js",
     "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/Eck/EcksCampaignHelper-Backend#readme",
   "dependencies": {
     "dotenv": "^16.3.1",
-    "openai": "^4.24.1"
+    "openai": "^4.24.1",
+    "sqlite3": "^5.1.7"
   }
 }

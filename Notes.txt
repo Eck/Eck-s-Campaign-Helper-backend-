@@ -1,18 +1,11 @@
-Overall Goal:
-Make a helper app to generate random NPC's for an RPG campaign like Dungeons & Dragons.
-Ask ChatGPT to write a cool description for those NPC's.
-Ask MidJourney to make some character art for those NPC's.
-Store all that stuff in in the database so people can browse it.
-
-
 Getting the ChatGPT stuff call was super easy thanks to the package. But I don't want to burn through my free credits, during testing. :) Instead, I'm going to mock up responses, and swap that out for the real thing later.
 
 
 TODO:
 X - Mock ChatGPT request basic function call.
 X - Mock some Question/Answer storage so it can actually pretend to be OpenAI.
-  - Wire up a Database Maybe Sqlite maybe MySQL
-  - Create DataModel / Database Seed scripts for the app.
+X - Wire up a Sqlite Database 
+/ - Create DataModel / Database Seed scripts for the app.
   - CRUD pages for an NPC, maybe even CRUD pages for the dropdowns, Race, Class, Gender, etc. so people can add what's missing.
   - Look up a dependency injection framework instead of hardcoding my MOCK OpenAI class. Then we can drive stuff off of configuration
 
@@ -27,3 +20,14 @@ https://platform.openai.com/docs/overview
 https://platform.openai.com/docs/api-reference/chat
 https://platform.openai.com/docs/guides/text-generation/chat-completions-api?lang=node.js
 
+Markdown Syntax:
+https://www.markdownguide.org/basic-syntax/
+
+SQLite Links:
+https://www.sqlitetutorial.net/sqlite-nodejs/connect/
+https://www.sqlitetutorial.net/sqlite-create-table/
+https://www.sqlite.org/datatype3.html
+https://levelup.gitconnected.com/database-seeding-in-node-js-2b2eec5bfaa1
+https://stackoverflow.com/questions/3634984/insert-if-not-exists-else-update
+https://levelup.gitconnected.com/running-sql-queries-from-an-sql-file-in-a-nodejs-app-sqlite-a927f0e8a545
+INSERT OR REPLACE INTO tableName (...) values(...);
