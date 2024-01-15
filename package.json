@@ -6,6 +6,7 @@
   "scripts": {
     "seed": "node database/initdatabase.js",
     "dev": "node index.js",
+	"scratch": "node scratch-code.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

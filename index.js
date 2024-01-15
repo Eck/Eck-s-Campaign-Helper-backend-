@@ -52,15 +52,15 @@ async function main()
 	await askQuestion("Where was it played");
 
 	// Ask a question it doesnt know (should be waiting for response)
-	let question = "Who played in the world series in 2020?";
-	let response = "The Tampa Bay Rays and the Los Angeles Dodgers";
-	await askQuestion(question);
+	let userPrompt = "Who played in the world series in 2020?";
+	let aiResponse = "The Tampa Bay Rays and the Los Angeles Dodgers";
+	await askQuestion(userPrompt);
 
 	// Add some new data into our knowledgebase.
-	await giveAIResponse(question, response);
+	await giveAIResponse(userPrompt, aiResponse);
 
 	// Now ask the question and see the correct answer
-	await askQuestion(question);
+	await askQuestion(userPrompt);
 }
 
 await main();

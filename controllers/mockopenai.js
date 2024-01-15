@@ -1,8 +1,8 @@
-import Interaction from './../models/interaction.js';
+import AIInteraction from '../models/ai-interaction.js';
 // This javascript file just pretends to be OpenAI with some stubbed out classes that match how we call the real OpenAI system. 
 // The reason I'm making this mock system is because I didn't want to burn through my credits with like an infinite loop bug. :)
 
-// What a code request looks like to the real OpenAI:
+// What a series of prompts and responses looks like to the real OpenAI:
 //     const completion = await openai.chat.completions.create({
 //         messages: [{"role": "system", "content": "You are a helpful assistant."},
 //             {"role": "user", "content": "Who won the world series in 2020?"},
@@ -18,8 +18,8 @@ import Interaction from './../models/interaction.js';
 // Seeding our interactions with some data so it can look like a chat bot.
 let interactionDict = 
 {
-	"who won the world series in 2020" : new Interaction("Who won the world series in 2020?", "The Los Angeles Dodgers won the World Series in 2020."),
-	"where was it played" : new Interaction("Where was it played?", "The entire series was played at Globe Life Field in Arlington, Texas.")
+	"who won the world series in 2020" : new AIInteraction(null,"Who won the world series in 2020?", "The Los Angeles Dodgers won the World Series in 2020."),
+	"where was it played" : new AIInteraction(null,"Where was it played?", "The entire series was played at Globe Life Field in Arlington, Texas.")
 };
 
 
@@ -51,7 +51,7 @@ let messages = [];
 
 // The response has a list of choices, but I've only ever seen one so far. Maybe you can ask for more? I'm still a noob.
 // Simple class represents a choice returned by the AI.
-// A single "choice" looks like this in a chat completion request.
+// A single "choice" looks like this in a chat completion prompt/response.
 //     {
 //       "finish_reason": "stop",
 //       "index": 0,
@@ -76,7 +76,7 @@ class MockChoice
 
 
 // This is the class that actually does any work. (well pretend work). 
-// A single "completion" looks like this in a chat completion request.
+// A single "completion" looks like this in a chat completion prompt/response.
 //     {
 //         "choices": [{
 //             "finish_reason": "stop",
@@ -100,9 +100,9 @@ class MockChoice
 class MockCompletion
 {
 	// The main method for creating a response from the AI
-	async create(request)
+	async create(userPrompt)
 	{
-		let messages = request.messages;
+		let messages = userPrompt.messages;
 
 		this.messages = [];
 		this.systemMessage = null;
@@ -110,7 +110,7 @@ class MockCompletion
 		// Create some bogus data for the Completion.create fields.
 		this.created = Date.now() / 1000;
 		this.id = "MOCK-chatcmpl-7QyqpwdfhqwajicIEznoc6Q47XAyW";
-		this.model = "MOCK-" + request.model;
+		this.model = "MOCK-" + userPrompt.model;
 		this.object = "MockCompletion";
 		this.usage = { "completion_tokens": 17, "prompt_tokens": 57, "total_tokens": 74 };
 
@@ -123,14 +123,14 @@ class MockCompletion
 
 		// Loop through our messages
 		let lastMessage = undefined;
-		let lastUserMessage = undefined;
-		let lastAIMessage = undefined;
+		let lastUserPrompt = undefined;
+		let lastAIResponse = undefined;
 		let lastInteraction = undefined;
 
 		// So this mock code is a bit dirty. I'll be receiving an alternating list of user prompts and ai responses.
 		// I'm not really worried about handling bad data here since I'm in control of everything.
 		// This loop goes through the list of prompt/responses and update any responses necessary.
-		// If the last bit of data was a request, we'll look up or create a response and set that
+		// If the last bit of data was a userPrompt, we'll look up or create a response and set that
 		// as our choice.
 		for(let i=0;i<messages.length;++i)
 		{
@@ -146,17 +146,17 @@ class MockCompletion
 			{
 				this.messages.push(message);
 
-				// If we're a user request, setup an interaction to hold the response
+				// If we're a userPrompt, setup an interaction to hold the response
 				if(message.role == MockRoles.user)
 				{
-					lastUserMessage = message;
+					lastUserPrompt = message;
 					lastInteraction = this.GetOrCreateInteraction(message.content); 
 				}
-				// If we have an answer for the previous question, we can set our interaction
+				// If we have an aiResponse for the previous question, we can set our interaction
 				else if(message.role == MockRoles.assistant && lastInteraction)
 				{
-					lastAIMessage = message;
-					lastInteraction.response = message.content;
+					lastAIResponse = message;
+					lastInteraction.AIResponse = message.content;
 					lastInteraction = undefined;
 				}
 			}
@@ -166,7 +166,7 @@ class MockCompletion
 		if(lastMessage.role == MockRoles.user)
 		{
 			let interaction = this.GetOrCreateInteraction(lastMessage.content);
-			this.choices = [JSON.stringify(new MockChoice(MockRoles.assistant, interaction.response))];
+			this.choices = [JSON.stringify(new MockChoice(MockRoles.assistant, interaction.AIResponse))];
 		}
 		// Otherwise just return the last message as if it's our response.
 		else
@@ -192,7 +192,7 @@ class MockCompletion
 		let promptKey = this.ConvertPromptToDictionaryKey(prompt);
 		if(!interactionDict.hasOwnProperty(promptKey))
 		{
-			interactionDict[promptKey] = Interaction.CreateFromPrompt(prompt);
+			interactionDict[promptKey] = AIInteraction.createFromPrompt(prompt);
 		}
 		return interactionDict[promptKey];
 	}
