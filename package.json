@@ -1,32 +1,32 @@
 {
-  "name": "ecks-campaign-helper-backend",
-  "version": "1.0.0",
-  "description": "I needed a real project to better help my learning efforts for some cloud computing technologies. It'll also serve as an example for potential employers. My plan is to make some AI assisted tools that will be useful for DM's and learn some cloud computing stuff along the way.",
-  "main": "index.js",
-  "scripts": {
-    "seed": "node database/initdatabase.js",
-    "dev": "node index.js",
-	"scratch": "node scratch-code.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Eck/EcksCampaignHelper-Backend.git"
-  },
-  "type": "module",
-  "keywords": [
-    "eck",
-    "test"
-  ],
-  "author": "Eck",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Eck/EcksCampaignHelper-Backend/issues"
-  },
-  "homepage": "https://github.com/Eck/EcksCampaignHelper-Backend#readme",
-  "dependencies": {
-    "dotenv": "^16.3.1",
-    "openai": "^4.24.1",
-    "sqlite3": "^5.1.7"
-  }
+	"name": "ecks-campaign-helper-backend",
+	"version": "1.0.0",
+	"description": "I needed a real project to better help my learning efforts for some cloud computing technologies. It'll also serve as an example for potential employers. My plan is to make some AI assisted tools that will be useful for DM's and learn some cloud computing stuff along the way.",
+	"main": "index.js",
+	"scripts": {
+		"seed": "node database/initdatabase.js",
+		"dev": "node index.js",
+		"scratch": "node scratch-code.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Eck/EcksCampaignHelper-Backend.git"
+	},
+	"type": "module",
+	"keywords": [
+		"eck",
+		"test"
+	],
+	"author": "Eck",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Eck/EcksCampaignHelper-Backend/issues"
+	},
+	"homepage": "https://github.com/Eck/EcksCampaignHelper-Backend#readme",
+	"dependencies": {
+		"dotenv": "^16.3.1",
+		"openai": "^4.24.1",
+		"sqlite3": "^5.1.7"
+	}
 }
