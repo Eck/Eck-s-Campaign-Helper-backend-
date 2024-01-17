@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS AIInteraction
 (
 	AIInteractionID INTEGER PRIMARY KEY,
 	UserPrompt TEXT NOT NULL,
-	AIResponse BLOB NOT NULL DEFAULT '{"finish_reason": "stop","index": 0,"message": { "content": "Waiting for response...", "role": "assistant" }, "logprobs": null }'
+	AIResponse TEXT NOT NULL DEFAULT '{"finish_reason": "stop","index": 0,"message": { "content": "Waiting for response...", "role": "assistant" }, "logprobs": null }'
 );
 
 CREATE TABLE IF NOT EXISTS [Character]

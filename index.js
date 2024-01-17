@@ -9,11 +9,14 @@ const app = new express();
 let db = Database.openDatabase();
 app.set('db', db); 
 
+// Tell express to parse json into objects
+app.use(express.json());
+
 // map our routes
 app.use("/interactions", aiInteractionRouter);
 
 // Start listening to a port for our service
-app.listen(3141, () => 
+let server = app.listen(3141, () => 
 {
 	console.log("Listening at http://localhost:3141")
 });
@@ -24,11 +27,20 @@ app.listen(3141, () =>
 // https://stackoverflow.com/questions/43003870/how-do-i-shut-down-my-express-server-gracefully-when-its-process-is-killed
 function cleanup()
 {
+	// If the db hasn't been closed yet, close it
 	if(db != null)
 	{
 		db.close();
 		db = null;
 		app.set('db', null);
+	}
+
+	// If the server hasn't been closed yet, close it.
+	if(server != null)
+	{
+		console.log("Server shutting down...")
+		server.close();
+		server = null;
 	}
 }
 
@@ -36,3 +48,7 @@ function cleanup()
 process.on("SIGTERM", cleanup);
 process.on("SIGINT", cleanup);
 //db.close();
+
+// A way to forcibly close the process
+// netstat -ano | findstr :3141
+//  taskkill //pid 41736 //f

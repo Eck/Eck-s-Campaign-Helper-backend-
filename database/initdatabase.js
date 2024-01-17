@@ -161,4 +161,35 @@ async function insertData(db, dataObject)
 	return query;
 }
 
-export {openDatabase, initDatabase, selectAllData, selectSingleData, insertData}
+// updates a data object into the database. The dataObject passed in must implement the following interface:
+//     getUpdateStatement() - returns a sqlite insert statement
+//     getUpdateValues() - returns an array of it's insert values
+//     getPrimaryKey() - returns the primary key of the dataObject
+async function updateData(db, dataObject)
+{
+	// db.run is technically not async. It just calls a callback when it's done. 
+	// This means we can't await it, so I have to wrap it in a promise to get at the 
+	// primary key that was created during the insert.
+	const query = await new Promise((resolve, reject) =>
+	{
+		// Run our insert statement
+		db.run(dataObject.getUpdateStatement(), dataObject.getUpdateValues(), function (err) // Can't be an arrow func. Must be a defined function to access this.lastID
+		{
+			genericdDatabaseCallback(err);
+			if(err)
+			{
+				reject(err);
+			}
+			else
+			{
+				// Pull out the updated object from the database
+				let updatedObjectPromise = selectSingleData(db, dataObject, dataObject.getPrimaryKey())
+				updatedObjectPromise.then((updatedObject) => {resolve(updatedObject)});
+			}
+		});
+	});
+
+	return query;
+}
+
+export {openDatabase, initDatabase, selectAllData, selectSingleData, insertData, updateData}

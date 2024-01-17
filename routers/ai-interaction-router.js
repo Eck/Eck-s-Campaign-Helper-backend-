@@ -3,6 +3,22 @@ import express from "express";
 import {AIInteraction, EMPTY_AI_INTERACTION} from "../models/ai-interaction.js"
 
 
+// Looks for a required parameter and if it isn't there, it marks the response with a 400 status.
+// Returns true if the parameter is set. Otherwise, false.
+function isRequiredParameterPresent(res, parameter, parameterName)
+{
+	if(!parameter || parameter == "")
+	{
+		res.status(400);
+		res.send({"error": `${parameterName} is a required field.`});
+		return false;
+	}
+
+	return true;
+}
+
+
+// "/interactions/" is used on the aiInteractionRouter in the index.js file.
 let aiInteractionRouter = express.Router();
 
 
@@ -23,40 +39,63 @@ aiInteractionRouter.get("/:id",async (req,res)=>
 	res.send(JSON.stringify(aiInteraction,null,4));
 });
 
+// Create new AI Interactions
+aiInteractionRouter.post("/", async (req, res) => {
+	let userPrompt = req.body.userPrompt;
+	let aiResponse = req.body.aiResponse;
 
-// router.post("/",function (req,res){
-//     if (req.body.email){
-//         friends[req.body.email] = {
-//             "firstName":req.body.firstName,
-//             "lastName":req.body.lastName,
-//             "dob":req.body.DOB,
-//             }
-//     }
-// res.send("The user" + (' ')+ (req.body.firstName) + " Has been added!");
-// });
+	if(!isRequiredParameterPresent(res, userPrompt, "userPrompt"))
+	{
+		return;
+	}
 
+	let aiInteraction = null;
+	// If we don't have a response yet, just create an interaction without one.
+	if(!aiResponse || aiResponse == "")
+	{
+		aiInteraction = AIInteraction.createFromPrompt(userPrompt);
+	}
+	// Otherwise, we already have the prompt and response.
+	else
+	{
+		aiInteration = new AIInteraction(userPrompt, aiResponse);
+	}
 
-// // PUT request: Update the details of a friend with email id
-// router.put("/:email", function (req, res) {
-//     const email = req.params.email;
-//     let friend = friends[email]
-//     if (friend) { //Check is friend exists
-//         let DOB = req.body.DOB;
-//         //Add similarly for firstName
-//         //Add similarly for lastName
-//         //if DOB the DOB has been changed, update the DOB 
-//         if(DOB) {
-//             friend["DOB"] = DOB
-//         }
-//         //Add similarly for firstName
-//         //Add similarly for lastName
-//         friends[email]=friend;
-//         res.send(`Friend with the email  ${email} updated.`);
-//     }
-//     else{
-//         res.send("Unable to find friend!");
-//     }
-//   });
+	// Insert our object.
+	let db = req.app.get('db');
+	aiInteraction = await Database.insertData(db, aiInteraction);
+	res.send(JSON.stringify(aiInteraction,null,4));
+});
+
+// Update AI Interaction
+aiInteractionRouter.put("/", async (req, res) => {
+	let aiInteractionID = req.body.aiInteractionID;
+	let userPrompt = req.body.userPrompt;
+	let aiResponse = req.body.aiResponse;
+
+	if(!isRequiredParameterPresent(res, aiInteractionID, "aiInteractionID"))
+	{
+		return;
+	}
+
+	if(!isRequiredParameterPresent(res, userPrompt, "userPrompt"))
+	{
+		return;
+	}
+
+	if(!isRequiredParameterPresent(res, aiResponse, "aiResponse"))
+	{
+		return;
+	}
+
+	let aiInteraction = new AIInteraction(aiInteractionID, userPrompt, aiResponse);
+
+	// Insert our object.
+	let db = req.app.get('db');
+	aiInteraction = await Database.updateData(db, aiInteraction);
+	res.send(JSON.stringify(aiInteraction,null,4));
+});
+
 
 
 // // DELETE request: Delete a friend by email id

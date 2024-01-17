@@ -6,14 +6,20 @@ X - Mock ChatGPT request basic function call.
 X - Mock some Question/Answer storage so it can actually pretend to be OpenAI.
 X - Wire up a Sqlite Database 
 / - Create DataModel / Database Seed scripts for the app.
-  - Get POC for writing data to the database.
+/ - Get POC for writing data to the database.
+X   - Select all
+X   - Select single
+X   - Insert new
+X   - Update existing
+    - Delete
+
   - Create database mapping from objects to sql.
-    - AI Interaction
+/   - AI Interaction
     - Character
   - Convert in-memory dictionary over to SQLite Database
   - CRUD pages for an NPC, maybe even CRUD pages for the dropdowns, Race, Class, Gender, etc. so people can add what's missing.
   - Look up a dependency injection framework instead of hardcoding my MOCK OpenAI class. Then we can drive stuff off of configuration
-
+  - Start using sqlite compile statements and bind methods. Good example: https://stackoverflow.com/questions/8884058/sqlite-is-it-possible-to-insert-a-blob-via-insert-statement/8884362#8884362
 
 
 
