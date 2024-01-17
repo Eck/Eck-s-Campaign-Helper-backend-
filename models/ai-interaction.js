@@ -1,5 +1,5 @@
-
 const aiInteractionSelectAllStatement = "SELECT AIInteractionID, UserPrompt, AIResponse FROM AIInteraction";
+const aiInteractionSelectSingleStatement = "SELECT AIInteractionID, UserPrompt, AIResponse FROM AIInteraction WHERE AIInteractionID = ?";
 const aiInteractionInsertStatement = "INSERT INTO AIInteraction (UserPrompt, AIResponse) VALUES (?, ?)";
 
 // Simple data model that holds a user's prompt, and what the AI responded with.
@@ -37,6 +37,11 @@ export default class AIInteraction
 		return aiInteractionSelectAllStatement;
 	}
 
+	getSelectSingleStatement()
+	{
+		return aiInteractionSelectSingleStatement;
+	}
+
 	getInsertStatement()
 	{
 		return aiInteractionInsertStatement;
@@ -53,3 +58,8 @@ export default class AIInteraction
 		this.AIInteractionID = primaryKey;
 	}
 }
+
+
+const EMPTY_AI_INTERACTION = AIInteraction.createDefault();
+
+export {AIInteraction, EMPTY_AI_INTERACTION}

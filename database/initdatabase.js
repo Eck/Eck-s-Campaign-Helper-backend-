@@ -80,7 +80,7 @@ async function selectAllData(db, dataObject)
 			genericdDatabaseCallback(err);
 			if(err)
 			{
-				reject(err)
+				reject(err);
 			}
 			else
 			{
@@ -97,6 +97,39 @@ async function selectAllData(db, dataObject)
 
 	return query;
 }
+
+// selects a single dataObject by id. Returns null if it doesn't exist. 
+//     getSelectAllStatement() - returns a sqlite select statement to pull the data
+//     createFromRow(row) - creates an object of the appropriate time from a row of data.
+async function selectSingleData(db, dataObject, id)
+{
+	// db.get is technically not async. It just calls a callback when it's done. 
+	// This means we can't await it, so I have to wrap it in a promise to be 
+	// able to wait until its finished.
+	const query = await new Promise((resolve, reject) =>
+	{
+		db.get(dataObject.getSelectSingleStatement(), id, function(err, row) 
+		{
+			genericdDatabaseCallback(err);
+			if(err)
+			{
+				reject(err);
+			}
+			else
+			{
+				let createdObject = null;
+				if(row)
+				{
+					createdObject = dataObject.createFromRow(row);
+				}
+				resolve(createdObject);
+			}
+		});
+	});
+
+	return query;
+}
+
 
 // inserts a data object into the database. The dataObject passed in must implement the following interface:
 //     getInsertStatement() - returns a sqlite insert statement
@@ -115,7 +148,7 @@ async function insertData(db, dataObject)
 			genericdDatabaseCallback(err);
 			if(err)
 			{
-				reject(err)
+				reject(err);
 			}
 			else
 			{
@@ -128,4 +161,4 @@ async function insertData(db, dataObject)
 	return query;
 }
 
-export {openDatabase, initDatabase, selectAllData, insertData}
+export {openDatabase, initDatabase, selectAllData, selectSingleData, insertData}

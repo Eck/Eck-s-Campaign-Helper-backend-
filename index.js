@@ -32,6 +32,7 @@ function cleanup()
 	}
 }
 
+
 process.on("SIGTERM", cleanup);
 process.on("SIGINT", cleanup);
 //db.close();

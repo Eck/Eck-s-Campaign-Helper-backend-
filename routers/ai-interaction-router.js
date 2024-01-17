@@ -1,6 +1,6 @@
 import * as Database from "../database/initdatabase.js"
 import express from "express";
-import AIInteraction from "../models/ai-interaction.js"
+import {AIInteraction, EMPTY_AI_INTERACTION} from "../models/ai-interaction.js"
 
 
 let aiInteractionRouter = express.Router();
@@ -10,18 +10,18 @@ let aiInteractionRouter = express.Router();
 aiInteractionRouter.get("/",async (req,res)=>
 {
 	let db = req.app.get('db');
-	let aiInteraction = AIInteraction.createDefault();
-	let aiInteractions = await Database.selectAllData(db, aiInteraction);
-    res.send(JSON.stringify(aiInteractions,null,4));
+	let aiInteractions = await Database.selectAllData(db, EMPTY_AI_INTERACTION);
+	res.send(JSON.stringify(aiInteractions,null,4));
 });
 
-// // GET by specific ID request: Retrieve a single friend with email ID
-// aiInteractionRouter.get("/:id",(req,res)=>{
-//     let email = req.params.email;
-
-//     let selectedFriend = friends[email];
-//     res.send(selectedFriend, null, 4);
-// });
+// GET by specific ID request: Retrieve a single friend with email ID
+aiInteractionRouter.get("/:id",async (req,res)=>
+{
+    let id = req.params.id;
+	let db = req.app.get('db');
+	let aiInteraction = await Database.selectSingleData(db, EMPTY_AI_INTERACTION, id);
+	res.send(JSON.stringify(aiInteraction,null,4));
+});
 
 
 // router.post("/",function (req,res){
