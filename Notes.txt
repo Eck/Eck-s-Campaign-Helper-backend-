@@ -17,7 +17,7 @@ X - Wire up a Sqlite Database
 
 
 
-Links:
+# Links:
 https://platform.openai.com/usage - Keep an eye on things. Make sure my tests don't burn through all my credits. :D
 https://platform.openai.com/playground?mode=chat
 
@@ -25,10 +25,10 @@ https://platform.openai.com/docs/overview
 https://platform.openai.com/docs/api-reference/chat
 https://platform.openai.com/docs/guides/text-generation/chat-completions-api?lang=node.js
 
-Markdown Syntax:
+# Markdown Syntax:
 https://www.markdownguide.org/basic-syntax/
 
-SQLite Links:
+# SQLite Links:
 https://www.sqlitetutorial.net/sqlite-nodejs/connect/
 https://www.sqlitetutorial.net/sqlite-create-table/
 https://www.sqlite.org/datatype3.html
@@ -37,7 +37,15 @@ https://stackoverflow.com/questions/3634984/insert-if-not-exists-else-update
 https://levelup.gitconnected.com/running-sql-queries-from-an-sql-file-in-a-nodejs-app-sqlite-a927f0e8a545
 INSERT OR REPLACE INTO tableName (...) values(...);
 
+# Inserting and getting the primary key
+https://stackoverflow.com/questions/48885164/insert-row-to-table-in-sqlite-and-node-js
 
-Randome APIs:
+# Some Async stuff:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+https://stackoverflow.com/questions/62456867/cannot-await-for-sqlite3-database-get-function-completion-in-node-js (wrapping non async callback in a promise)
+
+
+
+# Randome APIs:
 https://github.com/public-apis/public-apis
 https://randomuser.me/documentation#misc

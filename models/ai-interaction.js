@@ -1,4 +1,5 @@
 
+const aiInteractionSelectAllStatement = "SELECT AIInteractionID, UserPrompt, AIResponse FROM AIInteraction";
 const aiInteractionInsertStatement = "INSERT INTO AIInteraction (UserPrompt, AIResponse) VALUES (?, ?)";
 
 // Simple data model that holds a user's prompt, and what the AI responded with.
@@ -21,6 +22,20 @@ export default class AIInteraction
 		return new this(null, UserPrompt, "Waiting for response...");
 	}
 
+	static staticCreateFromRow(row)
+	{
+		return new this(row.AIInteractionID, row.UserPrompt, row.AIResponse);
+	}
+
+	createFromRow(row)
+	{
+		return AIInteraction.staticCreateFromRow(row);
+	}
+
+	getSelectAllStatement()
+	{
+		return aiInteractionSelectAllStatement;
+	}
 
 	getInsertStatement()
 	{
@@ -38,12 +53,3 @@ export default class AIInteraction
 		this.AIInteractionID = primaryKey;
 	}
 }
-
-/*
-CREATE TABLE IF NOT EXISTS AIInteraction
-(
-	AIInteractionID INTEGER PRIMARY KEY,
-	UserPrompt TEXT NOT NULL,
-	AIResponse BLOB NOT NULL DEFAULT '{"finish_reason": "stop","index": 0,"message": { "content": "Waiting for response...", "role": "assistant" }, "logprobs": null }'
-);
-*/

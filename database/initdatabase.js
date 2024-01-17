@@ -65,14 +65,45 @@ function initDatabase()
 	db.close(closeDatabaseCallback);
 }
 
+// selects an array of dataObjects from the database. The dataObject passed in must implement the following interface:
+//     getSelectAllStatement() - returns a sqlite select statement to pull the data
+//     createFromRow(row) - creates an object of the appropriate time from a row of data.
+async function selectAllData(db, dataObject)
+{
+	// db.all is technically not async. It just calls a callback when it's done. 
+	// This means we can't await it, so I have to wrap it in a promise to be 
+	// able to wait until its finished.
+	const query = await new Promise((resolve, reject) =>
+	{
+		db.all(dataObject.getSelectAllStatement(), function(err, rows) 
+		{
+			genericdDatabaseCallback(err);
+			if(err)
+			{
+				reject(err)
+			}
+			else
+			{
+				let createdObjects = [];
+				rows.forEach(function (row) 
+				{
+					let createdObject = dataObject.createFromRow(row);
+					createdObjects.push(createdObject);
+				});
+				resolve(createdObjects);
+			}
+		});
+	});
+
+	return query;
+}
+
 // inserts a data object into the database. The dataObject passed in must implement the following interface:
 //     getInsertStatement() - returns a sqlite insert statement
 //     getInsertValues() - returns an array of it's insert values
 //     setPrimaryKey() - takes a value to set the field that represents the primary key.
-async function insertData(dataObject)
+async function insertData(db, dataObject)
 {
-	let db = openDatabase();
-
 	// db.run is technically not async. It just calls a callback when it's done. 
 	// This means we can't await it, so I have to wrap it in a promise to get at the 
 	// primary key that was created during the insert.
@@ -92,11 +123,9 @@ async function insertData(dataObject)
 				resolve(dataObject);
 			}
 		});
-		db.close();
 	});
 
 	return query;
 }
 
-
-export {initDatabase, insertData}
+export {openDatabase, initDatabase, selectAllData, insertData}
