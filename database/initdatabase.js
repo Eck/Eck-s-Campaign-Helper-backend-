@@ -58,6 +58,7 @@ function initDatabase()
 	{
 		db.run("BEGIN TRANSACTION;", genericdDatabaseCallback);
 		execScript(db, "./database/01-seed-tables.sql");
+		execScript(db, "./database/02-seed-data.sql");
 		db.run("COMMIT;", genericdDatabaseCallback);
 	});
 
@@ -218,7 +219,39 @@ async function deleteData(db, dataObject)
 	});
 
 	return query;
-
 }
 
-export {openDatabase, initDatabase, selectAllData, selectSingleData, insertData, updateData, deleteData}
+// selects an array of dataObjects from the database. The dataObject passed in must implement the following interface:
+//     getSelectAllStatement() - returns a sqlite select statement to pull the data
+//     createFromRow(row) - creates an object of the appropriate time from a row of data.
+async function executeSelectStatement(db, dataObject, sqlStatement)
+{
+	// db.all is technically not async. It just calls a callback when it's done. 
+	// This means we can't await it, so I have to wrap it in a promise to be 
+	// able to wait until its finished.
+	const query = await new Promise((resolve, reject) =>
+	{
+		db.all(sqlStatement, function(err, rows) 
+		{
+			genericdDatabaseCallback(err);
+			if(err)
+			{
+				reject(err);
+			}
+			else
+			{
+				let createdObjects = [];
+				rows.forEach(function (row) 
+				{
+					let createdObject = dataObject.createFromRow(row);
+					createdObjects.push(createdObject);
+				});
+				resolve(createdObjects);
+			}
+		});
+	});
+
+	return query;
+}
+
+export {openDatabase, initDatabase, selectAllData, selectSingleData, insertData, updateData, deleteData, executeSelectStatement}
