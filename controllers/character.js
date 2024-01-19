@@ -1,8 +1,40 @@
 import * as Database from "../database/initdatabase.js"
-import {EMPTY_RACE, raceSelectAllNonRandomStatement} from "../models/race.js";
-import {EMPTY_CLASS, classSelectAllNonRandomStatement} from "../models/class.js";
-import {EMPTY_GENDER, genderSelectAllNonRandomStatement} from "../models/gender.js";
+import {EMPTY_GENDER, genderSelectAllStatement, genderSelectAllNonRandomStatement} from "../models/gender.js";
+import {EMPTY_RACE, raceSelectAllStatement, raceSelectAllNonRandomStatement} from "../models/race.js";
+import {EMPTY_CLASS, classSelectAllStatement, classSelectAllNonRandomStatement} from "../models/class.js";
+import {Character, EMPTY_CHARACTER} from "../models/character.js";
 
+
+let cacheAllGenders = null;
+let cacheAllRaces = null;
+let cacheAllClasses = null;
+
+async function getAllGenders(db)
+{
+	if(cacheAllGenders === null)
+	{
+		cacheAllGenders = await Database.executeSelectStatement(db, EMPTY_GENDER, genderSelectAllStatement); 
+	}
+	return cacheAllGenders;
+}
+
+async function getAllRaces(db)
+{
+	if(cacheAllRaces === null)
+	{
+		cacheAllRaces = await Database.executeSelectStatement(db, EMPTY_RACE, raceSelectAllStatement); 
+	}
+	return cacheAllRaces;
+}
+
+async function getAllClasses(db)
+{
+	if(cacheAllClasses === null)
+	{
+		cacheAllClasses = await Database.executeSelectStatement(db, EMPTY_CLASS, classSelectAllStatement); 
+	}
+	return cacheAllClasses;
+}
 
 function getRandomItemFromArray(items)
 {
@@ -36,27 +68,52 @@ async function getRandomGender(db)
 	return selectedItem;
 }
 
+// Given a character, fills in all the random details and generates a prompt 
+// to send to ChatGPT
 async function fillInRandomCharacterDetails(db, character)
 {
+	let rolledCharacter = Character.createFromCharacter(character);
+
+	let item = null;
+
 	if(!character.RaceID || character.RaceID == 0)
 	{
-		let race = await getRandomRace(db);
-		character.RaceID = race.RaceID;
+		item = await getRandomRace(db);
+		rolledCharacter.RaceID = item.RaceID;
 	}
 
 	if(!character.ClassID || character.ClassID == 0)
 	{
-		let charClass = await getRandomClass(db);
-		character.ClassID = charClass.ClassID;
+		item = await getRandomClass(db);
+		rolledCharacter.ClassID = item.ClassID;
 	}
 
 	if(!character.GenderID || character.GenderID == 0)
 	{
-		let gender = await getRandomGender(db);
-		character.GenderID = gender.GenderID;
+		item = await getRandomGender(db);
+		rolledCharacter.GenderID = item.GenderID;
 	}
 
-	return character;
+	rolledCharacter.generatedPrompt = geneartePrompt(db, rolledCharacter)
+
+	return rolledCharacter;
 }
 
-export {getRandomRace, getRandomClass, getRandomGender, fillInRandomCharacterDetails}
+// Given a character, generates a prompt to send to ChatGPT
+async function geneartePrompt(db, character)
+{
+	let genders = await getAllGenders(db);
+	let gender = genders.find(obj => { return obj.GenderID === character.GenderID});
+
+	let races = await getAllRaces(db);
+	let race = races.find(obj => { return obj.RaceID === character.RaceID});
+
+	let charClasses = await getAllClasses(db);
+	let charClass = charClasses.find(obj => { return obj.ClassID === character.ClassID});
+
+	let generatedPrompt = `Write a short character description for a ${gender.GenderName} ${race.RaceName} ${charClass.ClassName}. ${character.OtherNotes}`;
+
+	return generatedPrompt;
+}
+
+export {getRandomRace, getRandomClass, getRandomGender, fillInRandomCharacterDetails, geneartePrompt}

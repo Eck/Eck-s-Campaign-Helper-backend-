@@ -1,7 +1,6 @@
 //import express from "express"
 import AIInteraction from "./models/ai-interaction.js"
 import * as Database from "./database/initdatabase.js"
-import {aiInteractionRouter} from "./routers/ai-interaction-router.js"
 import {Race, EMPTY_RACE, raceSelectAllNonRandomStatement} from "./models/race.js";
 import {Class, EMPTY_CLASS, classSelectAllNonRandomStatement} from "./models/class.js";
 import {Gender, EMPTY_GENDER, genderSelectAllNonRandomStatement} from "./models/gender.js";
@@ -40,18 +39,19 @@ let db = Database.openDatabase();
 // console.log(JSON.stringify(gender));
 
 let character = Character.createDefault();
-await fillInRandomCharacterDetails(db, character);
-console.log(JSON.stringify(character));
+let rolledCharacter = await fillInRandomCharacterDetails(db, character);
+console.log(JSON.stringify(rolledCharacter));
 
 character.RaceID = 0
 character.ClassID = 1
-await fillInRandomCharacterDetails(db, character);
-console.log(JSON.stringify(character));
+rolledCharacter = await fillInRandomCharacterDetails(db, character);
+console.log(JSON.stringify(rolledCharacter));
 
 character.RaceID = 0
 character.ClassID = 1
-await fillInRandomCharacterDetails(db, character);
-console.log(JSON.stringify(character));
+character.OtherNotes = "The character has a scar over his left eye."
+rolledCharacter= await fillInRandomCharacterDetails(db, character);
+console.log(JSON.stringify(rolledCharacter));
 // app.set('db', db); 
 
 // app.use("/", aiInteractionRouter);

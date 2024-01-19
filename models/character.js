@@ -15,6 +15,24 @@ export default class Character
 	{
 		return new this(null, "", 0, 0, 0, "", null);
 	}
+
+	static createFromCharacter(characterToCopy)
+	{
+		let character = Character.createDefault();
+
+		if(characterToCopy == null)
+			return character;
+
+		character.CharacterID = characterToCopy.CharacterID;
+		character.CharacterName = characterToCopy.CharacterName;
+		character.RaceID = characterToCopy.RaceID;
+		character.ClassID = characterToCopy.ClassID;
+		character.GenderID = characterToCopy.GenderID;
+		character.OtherNotes = characterToCopy.OtherNotes;
+		character.DescriptionInteractionID = characterToCopy.DescriptionInteractionID;
+		
+		return character;
+	}
 }
 
 const EMPTY_CHARACTER = Object.freeze(Character.createDefault());

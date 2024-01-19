@@ -1,4 +1,4 @@
-const genderSelectAllStatement = "SELECT GenderID, GenderName FROM Gender WHERE GenderID > 0";
+const genderSelectAllStatement = "SELECT GenderID, GenderName FROM Gender";
 const genderSelectSingleStatement = "SELECT GenderID, GenderName FROM Gender WHERE GenderID = ?";
 const genderSelectAllNonRandomStatement = "SELECT GenderID, GenderName FROM Gender WHERE GenderID > 0";
 
@@ -49,4 +49,4 @@ export default class Gender
 
 const EMPTY_GENDER = Object.freeze(Gender.createDefault());
 
-export {Gender, EMPTY_GENDER, genderSelectAllNonRandomStatement}
+export {Gender, EMPTY_GENDER, genderSelectAllStatement, genderSelectAllNonRandomStatement}

@@ -1,4 +1,4 @@
-const raceSelectAllStatement = "SELECT RaceID, RaceName FROM Race WHERE RaceID > 0";
+const raceSelectAllStatement = "SELECT RaceID, RaceName FROM Race";
 const raceSelectSingleStatement = "SELECT RaceID, RaceName FROM Race WHERE RaceID = ?";
 const raceSelectAllNonRandomStatement = "SELECT RaceID, RaceName FROM Race WHERE RaceID > 0";
 
@@ -49,4 +49,4 @@ export default class Race
 
 const EMPTY_RACE = Object.freeze(Race.createDefault());
 
-export {Race, EMPTY_RACE, raceSelectAllNonRandomStatement}
+export {Race, EMPTY_RACE, raceSelectAllStatement, raceSelectAllNonRandomStatement}

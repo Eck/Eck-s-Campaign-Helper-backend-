@@ -1,26 +1,8 @@
 import * as Database from "../database/initdatabase.js"
 import express from "express";
 import {AIInteraction, EMPTY_AI_INTERACTION} from "../models/ai-interaction.js"
+import {isRequiredParameterPresent, sendSuccessMessage} from "./utility.js"
 
-
-// Looks for a required parameter and if it isn't there, it marks the response with a 400 status.
-// Returns true if the parameter is set. Otherwise, false.
-function isRequiredParameterPresent(res, parameter, parameterName)
-{
-	if(!parameter || parameter == "")
-	{
-		res.status(400);
-		res.send({"error": `${parameterName} is a required field.`});
-		return false;
-	}
-
-	return true;
-}
-
-function sendSuccessMessage(res, message, dataObject)
-{
-	res.send({"message": `${message}`, "dataObject": dataObject});
-}
 
 
 // "/interactions/" is used on the aiInteractionRouter in the index.js file.
@@ -38,7 +20,7 @@ aiInteractionRouter.get("/",async (req,res)=>
 // GET by specific ID request: Retrieve a single friend with email ID
 aiInteractionRouter.get("/:id",async (req,res)=>
 {
-    let id = req.params.id;
+	let id = req.params.id;
 	let db = req.app.get('db');
 	let aiInteraction = await Database.selectSingleData(db, EMPTY_AI_INTERACTION, id);
 	res.send(JSON.stringify(aiInteraction,null,4));
@@ -120,14 +102,5 @@ aiInteractionRouter.delete("/:id", async (req, res) => {
 	sendSuccessMessage(res, `Successfully deleted AIInteraction with AIInteractionID: [${id}]` , null);
 });
 
-
-// // DELETE request: Delete a friend by email id
-// router.delete("/:email", (req, res) => {
-//     const email = req.params.email;
-//     if (email){
-//         delete friends[email]
-//     }
-//     res.send(`Friend with the email  ${email} deleted.`);
-//   });
 
 export {aiInteractionRouter}

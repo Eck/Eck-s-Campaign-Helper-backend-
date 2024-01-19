@@ -1,6 +1,7 @@
 import express from "express"
 import * as Database from "./database/initdatabase.js"
 import {aiInteractionRouter} from "./routers/ai-interaction-router.js"
+import {characterRouter} from "./routers/character-router.js"
 
 const app = new express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // map our routes
 app.use("/interactions", aiInteractionRouter);
+app.use("/characters", characterRouter);
 
 // Start listening to a port for our service
 let server = app.listen(3141, () => 

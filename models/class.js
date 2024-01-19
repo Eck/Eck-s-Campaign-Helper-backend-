@@ -1,4 +1,4 @@
-const classSelectAllStatement = "SELECT ClassID, ClassName FROM Class WHERE ClassID > 0";
+const classSelectAllStatement = "SELECT ClassID, ClassName FROM Class";
 const classSelectSingleStatement = "SELECT ClassID, ClassName FROM Class WHERE ClassID = ?";
 const classSelectAllNonRandomStatement = "SELECT ClassID, ClassName FROM Class WHERE ClassID > 0";
 
@@ -49,4 +49,4 @@ export default class Class
 
 const EMPTY_CLASS = Object.freeze(Class.createDefault());
 
-export {Class, EMPTY_CLASS, classSelectAllNonRandomStatement}
+export {Class, EMPTY_CLASS, classSelectAllStatement, classSelectAllNonRandomStatement}
