@@ -4,7 +4,8 @@ import * as Database from "./database/initdatabase.js"
 import {aiInteractionRouter} from "./routers/ai-interaction-router.js"
 import {Race, EMPTY_RACE, raceSelectAllNonRandomStatement} from "./models/race.js";
 import {Class, EMPTY_CLASS, classSelectAllNonRandomStatement} from "./models/class.js";
-import {getRandomRace, getRandomClass} from "./controllers/character.js"
+import {Gender, EMPTY_GENDER, genderSelectAllNonRandomStatement} from "./models/gender.js";
+import {getRandomRace, getRandomClass, getRandomGender} from "./controllers/character.js"
 //const app = new express();
 
 // This file is what I plan to use to execute random bits of code as I start putting new systems in place.
@@ -30,6 +31,13 @@ let classList = await Database.executeSelectStatement(db, EMPTY_CLASS, classSele
 
 let charClass = await getRandomClass(db);
 console.log(JSON.stringify(charClass));
+
+
+//console.log(JSON.stringify(classList));
+
+let gender = await getRandomGender(db);
+console.log(JSON.stringify(gender));
+
 // app.set('db', db); 
 
 // app.use("/", aiInteractionRouter);

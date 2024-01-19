@@ -1,6 +1,7 @@
 import * as Database from "../database/initdatabase.js"
 import {EMPTY_RACE, raceSelectAllNonRandomStatement} from "../models/race.js";
 import {EMPTY_CLASS, classSelectAllNonRandomStatement} from "../models/class.js";
+import {EMPTY_GENDER, genderSelectAllNonRandomStatement} from "../models/gender.js";
 
 
 function getRandomItemFromArray(items)
@@ -10,18 +11,30 @@ function getRandomItemFromArray(items)
 	return item;
 }
 
+async function getRandomWrapper(db, emptyObject, statement)
+{
+	let items = await Database.executeSelectStatement(db, emptyObject, statement);
+	let selectedItem = getRandomItemFromArray(items);
+	return selectedItem;
+}
+
 async function getRandomRace(db)
 {
-	let raceList = await Database.executeSelectStatement(db, EMPTY_RACE, raceSelectAllNonRandomStatement);
-	let selectedRace = getRandomItemFromArray(raceList);
-	return selectedRace;
+	let selectedItem = await getRandomWrapper(db, EMPTY_RACE, raceSelectAllNonRandomStatement);
+	return selectedItem;
 }
 
 async function getRandomClass(db)
 {
-	let classList = await Database.executeSelectStatement(db, EMPTY_CLASS, classSelectAllNonRandomStatement);
-	let selectedClass = getRandomItemFromArray(classList);
-	return selectedClass;
+	let selectedItem = await getRandomWrapper(db, EMPTY_CLASS, classSelectAllNonRandomStatement);
+	return selectedItem;
 }
 
-export {getRandomRace, getRandomClass}
+async function getRandomGender(db)
+{
+	let selectedItem = await getRandomWrapper(db, EMPTY_GENDER, genderSelectAllNonRandomStatement);
+	return selectedItem;
+}
+
+
+export {getRandomRace, getRandomClass, getRandomGender}
