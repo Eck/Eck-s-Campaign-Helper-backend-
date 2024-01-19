@@ -1,8 +1,10 @@
 import * as Database from "../database/initdatabase.js"
 import express from "express";
 import {Character, EMPTY_CHARACTER} from "../models/character.js"
+import {AIInteraction, EMPTY_AI_INTERACTION} from "../models/ai-interaction.js"
 import {isRequiredParameterPresent, sendSuccessMessage} from "./utility.js"
-import { getRandomRace, getRandomClass, getRandomGender, fillInRandomCharacterDetails } from "../controllers/character.js";
+import {getRandomRace, getRandomClass, getRandomGender, fillInRandomCharacterDetails} from "../controllers/character.js";
+import {generateChatPrompt} from "../controllers/openai-wrapper.js"
 
 // "/character/" is used on the characterRouter in the index.js file.
 let characterRouter = express.Router();
@@ -33,9 +35,22 @@ characterRouter.get("/roll", async(req, res)=>{
 // 	let userPrompt = req.body.userPrompt;
 // 	let aiResponse = req.body.aiResponse;
 
-
 	res.send(JSON.stringify(rolledCharacter,null,4));
 });
+
+
+// characterRouter.post("/", async(req, res)=>{
+// 	let db = req.app.get('db');
+
+// 	let character = Character.createFromCharacter(req.body);
+// 	let rolledCharacter = await fillInRandomCharacterDetails(db, character);
+// // 	let userPrompt = req.body.userPrompt;
+// // 	let aiResponse = req.body.aiResponse;
+
+
+// 	res.send(JSON.stringify(rolledCharacter,null,4));
+// });
+
 // // GET request: Retrieve all characters
 // characterRouter.get("/",async (req,res)=>
 // {
@@ -53,33 +68,36 @@ characterRouter.get("/roll", async(req, res)=>{
 // 	res.send(JSON.stringify(character,null,4));
 // });
 
-// // Create new Characters
-// characterRouter.post("/", async (req, res) => {
-// 	let userPrompt = req.body.userPrompt;
-// 	let aiResponse = req.body.aiResponse;
+// Create new Characters
+characterRouter.post("/", async (req, res) => {
+	let character = Character.createFromCharacter(req.body);
+	character.generatedDescriptionPrompt = req.body.generatedDescriptionPrompt;
 
-// 	if(!isRequiredParameterPresent(res, userPrompt, "userPrompt"))
-// 	{
-// 		return;
-// 	}
+	if(!isRequiredParameterPresent(res, character.CharacterName, "CharacterName")
+	|| !isRequiredParameterPresent(res, character.GenderID, "GenderID")
+	|| !isRequiredParameterPresent(res, character.RaceID, "RaceID")
+	|| !isRequiredParameterPresent(res, character.ClassID, "ClassID")
+	|| !isRequiredParameterPresent(res, character.generatedDescriptionPrompt, "generatedDescriptionPrompt"))
+	{
+		return;
+	}
+	const db = req.app.get('db');
+	const openAI =  req.app.get('openAI');
 
-// 	let character = null;
-// 	// If we don't have a response yet, just create an interaction without one.
-// 	if(!aiResponse || aiResponse == "")
-// 	{
-// 		character = AIInteraction.createFromPrompt(userPrompt);
-// 	}
-// 	// Otherwise, we already have the prompt and response.
-// 	else
-// 	{
-// 		aiInteration = new AIInteraction(userPrompt, aiResponse);
-// 	}
+	// Insert our AI Interaction
+	let aiInteraction = AIInteraction.createFromPrompt(character.generatedDescriptionPrompt)
+	aiInteraction.AIResponse = await generateChatPrompt(openAI, aiInteraction.UserPrompt);
 
-// 	// Insert our object.
-// 	let db = req.app.get('db');
-// 	character = await Database.insertData(db, character);
-// 	res.send(JSON.stringify(character,null,4));
-// });
+	await Database.insertData(db, aiInteraction);
+
+	// Insert our Character 
+	character.DescriptionInteractionID = aiInteraction.AIInteractionID;
+	await Database.insertData(db, character);
+
+	character.aiInteraction = aiInteraction;
+
+	res.send(JSON.stringify(character,null,4));
+});
 
 // // Update Character
 // characterRouter.put("/", async (req, res) => {

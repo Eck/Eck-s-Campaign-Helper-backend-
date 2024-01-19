@@ -77,7 +77,7 @@ aiInteractionRouter.put("/", async (req, res) => {
 
 	let aiInteraction = new AIInteraction(aiInteractionID, userPrompt, aiResponse);
 
-	// Insert our object.
+	// update our object.
 	let db = req.app.get('db');
 	aiInteraction = await Database.updateData(db, aiInteraction);
 

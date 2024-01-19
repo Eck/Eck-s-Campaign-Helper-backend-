@@ -45,7 +45,7 @@ async function giveAIResponse(question, response)
 	return completion;
 }
 
-async function main() 
+async function test_openAI() 
 {
 	// Ask the AI some questions
 	await askQuestion("Who won the world series in 2020?");

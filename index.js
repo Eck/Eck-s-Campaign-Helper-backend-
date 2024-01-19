@@ -1,14 +1,23 @@
 import express from "express"
 import * as Database from "./database/initdatabase.js"
+import MockOpenAI from './controllers/mockopenai.js'
 import {aiInteractionRouter} from "./routers/ai-interaction-router.js"
 import {characterRouter} from "./routers/character-router.js"
 
-const app = new express();
 
+const app = new express();
 
 // Setup our database connection
 let db = Database.openDatabase();
 app.set('db', db); 
+
+// Setup our openAI 
+let openAIParams = {};
+openAIParams.apiKey = process.env.OPENAI_API_KEY;
+// TODO - look up a dependency injection framework later. I just wanted to get some coolness going so we're hardcoding directly to the mock class.
+//const openAI = new OpenAI(openAIParams);
+let openAI = new MockOpenAI(openAIParams);
+app.set('openAI', openAI)
 
 // Tell express to parse json into objects
 app.use(express.json());

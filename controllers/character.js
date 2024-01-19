@@ -94,13 +94,13 @@ async function fillInRandomCharacterDetails(db, character)
 		rolledCharacter.GenderID = item.GenderID;
 	}
 
-	rolledCharacter.generatedPrompt = geneartePrompt(db, rolledCharacter)
+	rolledCharacter.generatedDescriptionPrompt = genearteDescriptionPrompt(db, rolledCharacter)
 
 	return rolledCharacter;
 }
 
 // Given a character, generates a prompt to send to ChatGPT
-async function geneartePrompt(db, character)
+async function genearteDescriptionPrompt(db, character)
 {
 	let genders = await getAllGenders(db);
 	let gender = genders.find(obj => { return obj.GenderID === character.GenderID});
@@ -111,9 +111,9 @@ async function geneartePrompt(db, character)
 	let charClasses = await getAllClasses(db);
 	let charClass = charClasses.find(obj => { return obj.ClassID === character.ClassID});
 
-	let generatedPrompt = `Write a short character description for a ${gender.GenderName} ${race.RaceName} ${charClass.ClassName}. ${character.OtherNotes}`;
+	let generatedDescriptionPrompt = `Write a short character description for a ${gender.GenderName} ${race.RaceName} ${charClass.ClassName}. ${character.OtherNotes}`;
 
-	return generatedPrompt;
+	return generatedDescriptionPrompt;
 }
 
-export {getRandomRace, getRandomClass, getRandomGender, fillInRandomCharacterDetails, geneartePrompt}
+export {getRandomRace, getRandomClass, getRandomGender, fillInRandomCharacterDetails, genearteDescriptionPrompt}

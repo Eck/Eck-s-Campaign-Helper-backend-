@@ -166,12 +166,12 @@ class MockCompletion
 		if(lastMessage.role == MockRoles.user)
 		{
 			let interaction = this.GetOrCreateInteraction(lastMessage.content);
-			this.choices = [JSON.stringify(new MockChoice(MockRoles.assistant, interaction.AIResponse))];
+			this.choices = [new MockChoice(MockRoles.assistant, interaction.AIResponse)];
 		}
 		// Otherwise just return the last message as if it's our response.
 		else
 		{
-			this.choices = [JSON.stringify(new MockChoice(lastMessage.role, lastMessage.content))];
+			this.choices = [new MockChoice(lastMessage.role, lastMessage.content)];
 		}
 
 		return this;

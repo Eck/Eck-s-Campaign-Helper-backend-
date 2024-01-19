@@ -1,4 +1,8 @@
-export default class Character
+const characterSelectAllStatement = "SELECT * FROM CharacterID";
+const characterSelectSingleStatement = "SELECT * FROM Character WHERE CharacterID = ?";
+const characterInsertStatement = "INSERT INTO Character (CharacterName, RaceID, ClassID, GenderID, OtherNotes, DescriptionInteractionID) VALUES (?, ?, ?, ?, ?, ?)";
+
+class Character
 {
 	constructor(characterID, characterName, raceID, classID, genderID, otherNotes, descriptionInteractionID)
 	{
@@ -30,8 +34,29 @@ export default class Character
 		character.GenderID = characterToCopy.GenderID;
 		character.OtherNotes = characterToCopy.OtherNotes;
 		character.DescriptionInteractionID = characterToCopy.DescriptionInteractionID;
-		
+
 		return character;
+	}
+
+	getInsertStatement()
+	{
+		return characterInsertStatement;
+	}
+
+	getInsertValues()
+	{
+		let insertValues = [this.CharacterName, this.RaceID, this.ClassID, this.GenderID, this.OtherNotes, this.DescriptionInteractionID];
+		return insertValues;
+	}	
+
+	getPrimaryKey()
+	{
+		return this.CharacterID;
+	}
+
+	setPrimaryKey(primaryKey)
+	{
+		this.CharacterID = primaryKey;
 	}
 }
 
