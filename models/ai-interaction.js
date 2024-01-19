@@ -89,6 +89,6 @@ export default class AIInteraction
 }
 
 
-const EMPTY_AI_INTERACTION = AIInteraction.createDefault();
+const EMPTY_AI_INTERACTION = Object.freeze(AIInteraction.createDefault());
 
 export {AIInteraction, EMPTY_AI_INTERACTION}

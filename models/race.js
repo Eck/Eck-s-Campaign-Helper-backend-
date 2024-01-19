@@ -47,6 +47,6 @@ export default class Race
 	}
 }
 
-const EMPTY_RACE = Race.createDefault();
+const EMPTY_RACE = Object.freeze(Race.createDefault());
 
 export {Race, EMPTY_RACE, raceSelectAllNonRandomStatement}

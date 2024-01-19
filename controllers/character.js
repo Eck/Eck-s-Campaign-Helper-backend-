@@ -1,5 +1,6 @@
 import * as Database from "../database/initdatabase.js"
 import {EMPTY_RACE, raceSelectAllNonRandomStatement} from "../models/race.js";
+import {EMPTY_CLASS, classSelectAllNonRandomStatement} from "../models/class.js";
 
 
 function getRandomItemFromArray(items)
@@ -16,4 +17,11 @@ async function getRandomRace(db)
 	return selectedRace;
 }
 
-export {getRandomRace}
+async function getRandomClass(db)
+{
+	let classList = await Database.executeSelectStatement(db, EMPTY_CLASS, classSelectAllNonRandomStatement);
+	let selectedClass = getRandomItemFromArray(classList);
+	return selectedClass;
+}
+
+export {getRandomRace, getRandomClass}
