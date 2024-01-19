@@ -192,4 +192,33 @@ async function updateData(db, dataObject)
 	return query;
 }
 
-export {openDatabase, initDatabase, selectAllData, selectSingleData, insertData, updateData}
+// deletes a data object from the database. The dataObject passed in must implement the following interface:
+//     getDeleteStatement() - returns a sqlite insert statement
+//     getDeleteValues() - returns an array of it's insert values
+async function deleteData(db, dataObject)
+{
+	// db.run is technically not async. It just calls a callback when it's done. 
+	// This means we can't await it, so I have to wrap it in a promise to get 
+	// async behvior.
+	const query = await new Promise((resolve, reject) =>
+	{
+		// Run our insert statement
+		db.run(dataObject.getDeleteStatement(), dataObject.getDeleteValues(), function (err) // Can't be an arrow func. Must be a defined function to access this.lastID
+		{
+			genericdDatabaseCallback(err);
+			if(err)
+			{
+				reject(err);
+			}
+			else
+			{
+				resolve(null);
+			}
+		});
+	});
+
+	return query;
+
+}
+
+export {openDatabase, initDatabase, selectAllData, selectSingleData, insertData, updateData, deleteData}

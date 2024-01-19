@@ -6,15 +6,15 @@ X - Mock ChatGPT request basic function call.
 X - Mock some Question/Answer storage so it can actually pretend to be OpenAI.
 X - Wire up a Sqlite Database 
 / - Create DataModel / Database Seed scripts for the app.
-/ - Get POC for writing data to the database.
+X - Get POC for writing data to the database.
 X   - Select all
 X   - Select single
 X   - Insert new
 X   - Update existing
-    - Delete
+X   - Delete
 
   - Create database mapping from objects to sql.
-/   - AI Interaction
+X   - AI Interaction
     - Character
   - Convert in-memory dictionary over to SQLite Database
   - CRUD pages for an NPC, maybe even CRUD pages for the dropdowns, Race, Class, Gender, etc. so people can add what's missing.
@@ -36,6 +36,7 @@ https://www.markdownguide.org/basic-syntax/
 
 # SQLite Links:
 https://www.sqlitetutorial.net/sqlite-nodejs/connect/
+https://stackabuse.com/a-sqlite-tutorial-with-node-js/
 https://www.sqlitetutorial.net/sqlite-create-table/
 https://www.sqlite.org/datatype3.html
 https://levelup.gitconnected.com/database-seeding-in-node-js-2b2eec5bfaa1

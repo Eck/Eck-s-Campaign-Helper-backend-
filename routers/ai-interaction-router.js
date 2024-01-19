@@ -17,6 +17,11 @@ function isRequiredParameterPresent(res, parameter, parameterName)
 	return true;
 }
 
+function sendSuccessMessage(res, message, dataObject)
+{
+	res.send({"message": `${message}`, "dataObject": dataObject});
+}
+
 
 // "/interactions/" is used on the aiInteractionRouter in the index.js file.
 let aiInteractionRouter = express.Router();
@@ -93,9 +98,27 @@ aiInteractionRouter.put("/", async (req, res) => {
 	// Insert our object.
 	let db = req.app.get('db');
 	aiInteraction = await Database.updateData(db, aiInteraction);
+
 	res.send(JSON.stringify(aiInteraction,null,4));
 });
 
+
+aiInteractionRouter.delete("/:id", async (req, res) => {
+	const id = req.params.id;
+	if(!isRequiredParameterPresent(res, id, "id"))
+	{
+		return;
+	}
+
+	let aiInteraction = AIInteraction.createDefault();
+	aiInteraction.setPrimaryKey(id);
+
+	// Insert our object.
+	let db = req.app.get('db');
+	aiInteraction = await Database.deleteData(db, aiInteraction);
+
+	sendSuccessMessage(res, `Successfully deleted AIInteraction with AIInteractionID: [${id}]` , null);
+});
 
 
 // // DELETE request: Delete a friend by email id
