@@ -13,9 +13,9 @@ This project is going to be a RESTful api written in node.js/express to serve up
 
 ## Recent Progress:
 Here's a brief summary of what I have working so far. Take a look at the git history for more details. See also: [Notes.txt](https://github.com/Eck/EcksCampaignHelper-Backend/blob/main/Notes.txt) - for more details on current tasks and planned next steps.
-* Getting CRUD routes setup for AIInteraction (Select all, select single, insert, and update. Still working on delete)
-* Setup generic database operations to do (Select all, select single, insert, and update. Still working on delete)
+* Getting CRUD routes setup for AIInteraction 
+* Setup generic database operations for AIInteraction (Select all, select single, insert, update, and delete)
 * Pulled OpenAI scratch code into its own file so index can start acting like a real index.js.
 
-
+![DatabaseOps](https://github.com/Eck/EcksCampaignHelper-Backend/assets/4856214/8f18fd62-b7f1-48a1-a4ed-48ffa14bbb67)
 
