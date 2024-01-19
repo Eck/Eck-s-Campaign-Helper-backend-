@@ -36,5 +36,27 @@ async function getRandomGender(db)
 	return selectedItem;
 }
 
+async function fillInRandomCharacterDetails(db, character)
+{
+	if(!character.RaceID || character.RaceID == 0)
+	{
+		let race = await getRandomRace(db);
+		character.RaceID = race.RaceID;
+	}
 
-export {getRandomRace, getRandomClass, getRandomGender}
+	if(!character.ClassID || character.ClassID == 0)
+	{
+		let charClass = await getRandomClass(db);
+		character.ClassID = charClass.ClassID;
+	}
+
+	if(!character.GenderID || character.GenderID == 0)
+	{
+		let gender = await getRandomGender(db);
+		character.GenderID = gender.GenderID;
+	}
+
+	return character;
+}
+
+export {getRandomRace, getRandomClass, getRandomGender, fillInRandomCharacterDetails}

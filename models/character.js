@@ -1,4 +1,4 @@
-export default class character
+export default class Character
 {
 	constructor(characterID, characterName, raceID, classID, genderID, otherNotes, descriptionInteractionID)
 	{
@@ -13,25 +13,10 @@ export default class character
 
 	static createDefault()
 	{
-		this.CharacterID = null;
-		this.CharacterName = "";
-		this.RaceID = 0;
-		this.ClassID = 0;
-		this.GenderID = 0;
-		this.OtherNotes = 0;
-		this.DescriptionInteractionID = null;
+		return new this(null, "", 0, 0, 0, "", null);
 	}
 }
 
-/*
-	CharacterID INTEGER PRIMARY KEY,
-	CharacterName TEXT NOT NULL,
-	RaceID INTEGER NOT NULL,
-	ClassID INTEGER NOT NULL,
-	GenderID INTEGER NOT NULL,
-	-- SkinColorID INTEGER NOT NULL,
-	-- HairColorID INTEGER NOT NULL,
-	-- EyeColorID INTEGER NOT NULL,
-	OtherNotes TEXT NOT NULL,
-	DescriptionInteractionID NULL,
-*/
+const EMPTY_CHARACTER = Object.freeze(Character.createDefault());
+
+export {Character, EMPTY_CHARACTER}
