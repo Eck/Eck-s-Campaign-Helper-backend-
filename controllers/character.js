@@ -94,7 +94,7 @@ async function fillInRandomCharacterDetails(db, character)
 		rolledCharacter.GenderID = item.GenderID;
 	}
 
-	rolledCharacter.generatedDescriptionPrompt = genearteDescriptionPrompt(db, rolledCharacter)
+	rolledCharacter.generatedDescriptionPrompt = await genearteDescriptionPrompt(db, rolledCharacter)
 
 	return rolledCharacter;
 }
